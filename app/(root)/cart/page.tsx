@@ -29,7 +29,7 @@ const Cart = () => {
       if (!user) {
         router.push("sign-in");
       } else {
-        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/checkout`, {
+        const res = await fetch(`DT{process.env.NEXT_PUBLIC_API_URL}/checkout`, {
           method: "POST",
           body: JSON.stringify({ cartItems: cart.cartItems, customer }),
         });
@@ -70,7 +70,7 @@ const Cart = () => {
                     {cartItem.size && (
                       <p className="text-small-medium">{cartItem.size}</p>
                     )}
-                    <p className="text-small-medium">${cartItem.item.price}</p>
+                    <p className="text-small-medium">DT{cartItem.item.price}</p>
                   </div>
                 </div>
 
@@ -99,13 +99,13 @@ const Cart = () => {
       <div className="w-1/3 max-lg:w-full flex flex-col gap-8 bg-grey-1 rounded-lg px-4 py-5">
         <p className="text-heading4-bold pb-4">
           Summary{" "}
-          <span>{`(${cart.cartItems.length} ${
+          <span>{`(DT{cart.cartItems.length} DT{
             cart.cartItems.length > 1 ? "items" : "item"
           })`}</span>
         </p>
         <div className="flex justify-between text-body-semibold">
           <span>Total Amount</span>
-          <span>$ {totalRounded}</span>
+          <span>DT {totalRounded}</span>
         </div>
         <button
           className="border rounded-lg text-body-bold bg-white py-3 w-full hover:bg-black hover:text-white"
