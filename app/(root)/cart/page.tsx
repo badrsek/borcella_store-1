@@ -111,7 +111,7 @@ const Cart = () => {
           className="border rounded-lg text-body-bold bg-white py-3 w-full hover:bg-black hover:text-white"
           onClick={handleCheckout}
         >
-           Checkout
+          Presse to Checkout
         </button>
       </div>
     </div>
