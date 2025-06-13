@@ -3,6 +3,7 @@
 import useCart from "@/lib/hooks/useCart";
 
 import { useUser } from "@clerk/nextjs";
+import { phoneNumbers } from "@clerk/nextjs/api";
 import { MinusCircle, PlusCircle, Trash } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
@@ -25,22 +26,64 @@ const Cart = () => {
   };
 
   const handleCheckout = async () => {
+    if (!user) {
+      router.push("/sign-in");
+      return;
+    }
+  
     try {
-      if (!user) {
-        router.push("sign-in");
-      } else {
-        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/checkout`, {
+      // Prepare payload based on updated request
+      const payload = {
+        "receiverWalletId": "67689278d2cfbd306d7ef052",
+        "token": "TND",
+        "amount": totalRounded * 1000,
+        "type": "immediate",
+        "description": "payment description",
+        "acceptedPaymentMethods": [
+          "wallet",
+          "bank_card",
+          "e-DINAR",
+          "flouci"
+        ],
+        "lifespan": 10,
+        "checkoutForm": true,
+        "addPaymentFeesToAmount": true,
+        "firstName": customer.name,
+        "phoneNumber": "22777777",
+        "email": customer.email,
+        "orderId": customer.clerkId,
+        "webhook": "https://localhost:3001/api/webhooks",
+        "silentWebhook": true,
+        "successUrl": "https://borcellask.vercel.app/payment_success",
+        "failUrl": "https://borcellask.vercel.app/cart",
+        "theme": "light"
+      };
+  
+      // Send request to Konnect API
+      const res = await fetch(
+        "https://api.preprod.konnect.network/api/v2/payments/init-payment", // Updated API endpoint
+        {
           method: "POST",
-          body: JSON.stringify({ cartItems: cart.cartItems, customer }),
-        });
-        const data = await res.json();
-        window.location.href = data.url;
-        console.log(data);
+          headers: {
+            "x-api-key": "67689276d2cfbd306d7ef03f:95Wlzigrqqn4yU0YT4VmBC8iho3", // Add your actual API key
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(payload),
+        }
+      );
+  
+      const data = await res.json();
+  
+      if (data?.payUrl) {
+        window.open(data.payUrl, "_blank"); // Open payment page in a new tab
+      } else {
+        console.error("Error: No 'payUrl' found in the response.");
       }
     } catch (err) {
-      console.log("[checkout_POST]", err);
+      console.error("Error initializing payment:", err);
     }
   };
+  
 
   return (
     <div className="flex gap-20 py-16 px-10 max-lg:flex-col max-sm:px-3">
@@ -70,7 +113,7 @@ const Cart = () => {
                     {cartItem.size && (
                       <p className="text-small-medium">{cartItem.size}</p>
                     )}
-                    <p className="text-small-medium">DT{cartItem.item.price}</p>
+                    <p className="text-small-medium">{cartItem.item.price} DT</p>
                   </div>
                 </div>
 
@@ -99,13 +142,13 @@ const Cart = () => {
       <div className="w-1/3 max-lg:w-full flex flex-col gap-8 bg-grey-1 rounded-lg px-4 py-5">
         <p className="text-heading4-bold pb-4">
           Summary{" "}
-          <span>{`(DT{cart.cartItems.length} DT{
+          <span>{`(${cart.cartItems.length} ${
             cart.cartItems.length > 1 ? "items" : "item"
           })`}</span>
         </p>
         <div className="flex justify-between text-body-semibold">
           <span>Total Amount</span>
-          <span>DT {totalRounded}</span>
+          <span> {totalRounded} DT</span>
         </div>
         <button
           className="border rounded-lg text-body-bold bg-white py-3 w-full hover:bg-black hover:text-white"
