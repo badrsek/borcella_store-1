@@ -7,12 +7,7 @@ import { ClerkProvider } from "@clerk/nextjs";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-<<<<<<< HEAD
   title: "GdanaStore - Store Auth",
-=======
-  title: "TuniCraft - Store Auth",
-  description: "Next.js 14 TuniCraft Ecommerce store",
->>>>>>> 076a9bf088066a6e7ddf9009b95febe10bf344af
   description: "Next.js 14 GdanaStore Ecommerce store",
 };
 
