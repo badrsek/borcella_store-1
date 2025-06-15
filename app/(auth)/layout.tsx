@@ -8,7 +8,7 @@ const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "GdanaStore - Store Auth",
-  description: "Next.js 14 GdanaStore Ecommerce store",
+  description: "Next.js 14 Gdana4180 Ecommerce store",
 };
 
 export default function RootLayout({
