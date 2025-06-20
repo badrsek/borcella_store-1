@@ -34,7 +34,7 @@ const Cart = () => {
     try {
       // Prepare payload based on updated request
       const payload = {
-        "receiverWalletId": "67689278d2cfbd306d7ef052",
+        "receiverWalletId": "6602466487ed39c524a0602d",
         "token": "TND",
         "amount": totalRounded * 1000,
         "type": "immediate",
@@ -65,7 +65,7 @@ const Cart = () => {
         {
           method: "POST",
           headers: {
-            "x-api-key": "67689276d2cfbd306d7ef03f:95Wlzigrqqn4yU0YT4VmBC8iho3", // Add your actual API key
+            "x-api-key": "6602466487ed39c524a06029:3V1sE1nVnjOxsixFF", // Add your actual API key
             "Content-Type": "application/json",
           },
           body: JSON.stringify(payload),
