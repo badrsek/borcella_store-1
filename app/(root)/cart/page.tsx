@@ -65,7 +65,7 @@ const Cart = () => {
         {
           method: "POST",
           headers: {
-            "x-api-key": "6602466487ed39c524a06029:3V1sE1nVnjOxsixFF", // Add your actual API key
+            "x-api-key": "6602466487ed39c524a06029:teLbmXT7JOaOzktGASwUBRJJhsOouL", // Add your actual API key
             "Content-Type": "application/json",
           },
           body: JSON.stringify(payload),
