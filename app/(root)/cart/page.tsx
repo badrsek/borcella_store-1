@@ -3,7 +3,6 @@
 import useCart from "@/lib/hooks/useCart";
 
 import { useUser } from "@clerk/nextjs";
-import { phoneNumbers } from "@clerk/nextjs/api";
 import { MinusCircle, PlusCircle, Trash } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
@@ -26,64 +25,22 @@ const Cart = () => {
   };
 
   const handleCheckout = async () => {
-    if (!user) {
-      router.push("/sign-in");
-      return;
-    }
-  
     try {
-      // Prepare payload based on updated request
-      const payload = {
-        "receiverWalletId": "6602466487ed39c524a0602d",
-        "token": "TND",
-        "amount": totalRounded * 1000,
-        "type": "immediate",
-        "description": "payment description",
-        "acceptedPaymentMethods": [
-          "wallet",
-          "bank_card",
-          "e-DINAR",
-          "flouci"
-        ],
-        "lifespan": 10,
-        "checkoutForm": true,
-        "addPaymentFeesToAmount": true,
-        "firstName": customer.name,
-        "phoneNumber": "22777777",
-        "email": customer.email,
-        "orderId": customer.clerkId,
-        "webhook": "https://localhost:3001/api/webhooks",
-        "silentWebhook": true,
-        "successUrl": "https://borcellask.vercel.app/payment_success",
-        "failUrl": "https://borcellask.vercel.app/cart",
-        "theme": "light"
-      };
-  
-      // Send request to Konnect API
-      const res = await fetch(
-        "https://api.preprod.konnect.network/api/v2/payments/init-payment", // Updated API endpoint
-        {
-          method: "POST",
-          headers: {
-            "x-api-key": "6602466487ed39c524a06029:teLbmXT7JOaOzktGASwUBRJJhsOouL", // Add your actual API key
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(payload),
-        }
-      );
-  
-      const data = await res.json();
-  
-      if (data?.payUrl) {
-        window.open(data.payUrl, "_blank"); // Open payment page in a new tab
+      if (!user) {
+        router.push("sign-in");
       } else {
-        console.error("Error: No 'payUrl' found in the response.");
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/checkout`, {
+          method: "POST",
+          body: JSON.stringify({ cartItems: cart.cartItems, customer }),
+        });
+        const data = await res.json();
+        window.location.href = data.url;
+        console.log(data);
       }
     } catch (err) {
-      console.error("Error initializing payment:", err);
+      console.log("[checkout_POST]", err);
     }
   };
-  
 
   return (
     <div className="flex gap-20 py-16 px-10 max-lg:flex-col max-sm:px-3">
@@ -113,7 +70,7 @@ const Cart = () => {
                     {cartItem.size && (
                       <p className="text-small-medium">{cartItem.size}</p>
                     )}
-                    <p className="text-small-medium">{cartItem.item.price} DT</p>
+                    <p className="text-small-medium">${cartItem.item.price}</p>
                   </div>
                 </div>
 
@@ -148,13 +105,13 @@ const Cart = () => {
         </p>
         <div className="flex justify-between text-body-semibold">
           <span>Total Amount</span>
-          <span> {totalRounded} DT</span>
+          <span>$ {totalRounded}</span>
         </div>
         <button
           className="border rounded-lg text-body-bold bg-white py-3 w-full hover:bg-black hover:text-white"
           onClick={handleCheckout}
         >
-          Presse to Checkout
+          Proceed to Checkout
         </button>
       </div>
     </div>
